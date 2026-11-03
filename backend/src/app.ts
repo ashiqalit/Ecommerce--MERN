@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { notFound, errorHandler } from "./middlewares/errorHandler";
+import authRoutes from "./modules/auth/auth.routes";
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 // feature routes will be mounted here
-
+app.use("/api/auth", authRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
