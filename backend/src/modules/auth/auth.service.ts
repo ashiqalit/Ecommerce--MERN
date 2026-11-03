@@ -57,3 +57,14 @@ export async function login(input: LoginInput) {
   const { password: _password, ...safeUser } = user;
   return { user: safeUser, token: signToken(user) };
 }
+
+export async function getProfile(userId: number) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: safeUserSelect,
+  });
+  if (!user) {
+    throw ApiError.notFound("User not found");
+  }
+  return user;
+}
