@@ -5,6 +5,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import categoryRoutes from "./modules/categories/category.routes";
 import productRoutes from "./modules/products/product.routes";
 import { uploadsDir } from "./config/paths";
+import cartRoutes from "./modules/cart/cart.routes";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 // feature routes will be mounted here
+app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/auth", authRoutes);
