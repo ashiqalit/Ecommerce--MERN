@@ -2,6 +2,17 @@ import { Request, Response } from "express";
 import { parseId } from "../../utils/parseId";
 import { listProductsQuerySchema } from "./product.schema";
 import * as productService from "./product.service";
+import { ApiError } from "../../utils/ApiError";
+
+export const uploadImage = (req: Request, res: Response) => {
+  if (!req.file) {
+    throw ApiError.badRequest("No image file provided");
+  }
+  res.status(201).json({
+    success: true,
+    data: { imageUrl: `/uploads/${req.file.filename}` },
+  });
+};
 
 export const list = async (req: Request, res: Response) => {
   const query = listProductsQuerySchema.parse(req.query);

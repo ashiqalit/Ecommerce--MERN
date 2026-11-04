@@ -3,6 +3,7 @@ import { authenticate, authorize } from "../../middlewares/auth";
 import { validate } from "../../middlewares/validate";
 import { createProductSchema, updateProductSchema } from "./product.schema";
 import * as productController from "./product.controller";
+import { uploadImage as uploadImageMiddleware } from "../../middlewares/upload";
 
 const router = Router();
 
@@ -29,5 +30,11 @@ router.delete(
   authorize("ADMIN"),
   productController.remove,
 );
-
+router.post(
+  "/upload-image",
+  authenticate,
+  authorize("ADMIN"),
+  uploadImageMiddleware,
+  productController.uploadImage,
+);
 export default router;
