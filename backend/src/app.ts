@@ -7,6 +7,7 @@ import productRoutes from "./modules/products/product.routes";
 import { uploadsDir } from "./config/paths";
 import cartRoutes from "./modules/cart/cart.routes";
 import addressRoutes from "./modules/addresses/address.routes";
+import orderRoutes from "./modules/orders/order.routes";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 // feature routes will be mounted here
+app.use("/api/orders", orderRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/products", productRoutes);
