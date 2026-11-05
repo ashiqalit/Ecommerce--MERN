@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
-import { api } from "./api/client";
+import { Route, Routes } from "react-router";
+import { GuestRoute, ProtectedRoute } from "./routes/guards";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Home from "./pages/customer/Home";
+import Dashboard from "./pages/admin/Dashboard";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
-  const [status, setStatus] = useState("checking...");
-
-  useEffect(() => {
-    api
-      .get("/health")
-      .then((res) => setStatus(res.data.status))
-      .catch(() => setStatus("backend unreachable"));
-  }, []);
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-red-100">
-      <p className="text-xl font-semibold text-gray-800">
-        Backend status: {status}
-      </p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
+
+      <Route element={<ProtectedRoute role="ADMIN" />}>
+        <Route path="/admin" element={<Dashboard />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
