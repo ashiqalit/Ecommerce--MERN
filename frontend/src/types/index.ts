@@ -60,3 +60,46 @@ export interface Cart {
   subtotal: string;
   total: string;
 }
+export interface Address {
+  id: number;
+  userId: number;
+  fullName: string;
+  phone: string;
+  place: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
+export type OrderStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
+
+export interface OrderItem {
+  id: number;
+  productId: number;
+  name: string;
+  imageUrl: string | null;
+  quantity: number;
+  price: string;
+  lineTotal: string;
+}
+
+export interface Order {
+  id: number;
+  status: OrderStatus;
+  paymentMethod: "COD";
+  totalAmount: string;
+  createdAt: string;
+  updatedAt: string;
+  address: Address;
+  items: OrderItem[];
+}
+
+export interface OrderList {
+  items: Order[];
+  pagination: Pagination;
+}

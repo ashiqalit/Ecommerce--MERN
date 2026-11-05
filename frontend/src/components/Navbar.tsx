@@ -31,6 +31,15 @@ export function Navbar() {
                 </Link>
               )}
 
+              {user?.role === "CUSTOMER" && (
+                <Link
+                  to="/orders"
+                  className="text-gray-700 hover:text-indigo-600"
+                >
+                  Orders
+                </Link>
+              )}
+
               {user ? (
                 <>
                   <span className="hidden text-gray-600 sm:inline">

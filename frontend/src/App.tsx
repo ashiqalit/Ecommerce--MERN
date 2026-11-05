@@ -8,6 +8,9 @@ import NotFound from "./pages/NotFound";
 import { CustomerLayout } from "./components/CustomerLayout";
 import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";
+import Checkout from "./pages/customer/Checkout";
+import Orders from "./pages/customer/Orders";
+import OrderDetails from "./pages/customer/OrderDetails";
 
 export default function App() {
   return (
@@ -29,6 +32,9 @@ export default function App() {
       <Route element={<ProtectedRoute role="CUSTOMER" />}>
         <Route element={<CustomerLayout />}>
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<OrderDetails />} />
         </Route>
       </Route>
 
