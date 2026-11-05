@@ -14,12 +14,19 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const [categories, setCategories] = useState<Category[]>([]);
-  const [data, setData] = useState<ProductList | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [result, setResult] = useState<{
+    key: string;
+    data: ProductList | null;
+    error: string;
+  } | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   const search = useDebounce(searchInput.trim(), 400);
+
+  const requestKey = `${search}|${categoryId ?? ""}|${page}|${reloadKey}`;
+  const loading = result?.key !== requestKey;
+  const data = result?.data ?? null;
+  const error = !loading && result ? result.error : "";
 
   useEffect(() => {
     fetchCategories()
@@ -29,8 +36,6 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError("");
 
     fetchProducts({
       search: search || undefined,
@@ -38,20 +43,23 @@ export default function Home() {
       page,
       limit: PAGE_SIZE,
     })
-      .then((result) => {
-        if (!cancelled) setData(result);
+      .then((data) => {
+        if (!cancelled) setResult({ key: requestKey, data, error: "" });
       })
       .catch((err) => {
-        if (!cancelled) setError(getErrorMessage(err));
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setResult({
+            key: requestKey,
+            data: null,
+            error: getErrorMessage(err),
+          });
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [search, categoryId, page, reloadKey]);
+  }, [search, categoryId, page, requestKey]);
 
   function handleSearchChange(value: string) {
     setSearchInput(value);
