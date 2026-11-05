@@ -5,11 +5,14 @@ import Register from "./pages/auth/Register";
 import Home from "./pages/customer/Home";
 import Dashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
+import { CustomerLayout } from "./components/CustomerLayout";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route element={<CustomerLayout />}>
+        <Route path="/" element={<Home />} />
+      </Route>
 
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
