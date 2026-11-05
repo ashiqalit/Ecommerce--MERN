@@ -7,6 +7,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 import { CustomerLayout } from "./components/CustomerLayout";
 import ProductDetails from "./pages/customer/ProductDetails";
+import Cart from "./pages/customer/Cart";
 
 export default function App() {
   return (
@@ -23,6 +24,12 @@ export default function App() {
 
       <Route element={<ProtectedRoute role="ADMIN" />}>
         <Route path="/admin" element={<Dashboard />} />
+      </Route>
+
+      <Route element={<ProtectedRoute role="CUSTOMER" />}>
+        <Route element={<CustomerLayout />}>
+          <Route path="/cart" element={<Cart />} />
+        </Route>
       </Route>
 
       <Route path="*" element={<NotFound />} />

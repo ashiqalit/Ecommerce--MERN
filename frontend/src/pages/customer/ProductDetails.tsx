@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { fetchProduct } from "../../api/products";
+import { useAuth } from "../../context/useAuth";
+import { useCart } from "../../context/useCart";
 import type { Product } from "../../types";
 import { getErrorMessage } from "../../utils/errors";
 import { formatPrice, stockInfo } from "../../utils/format";
@@ -8,12 +10,22 @@ import { imageSrc } from "../../utils/image";
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const { cart, addItem } = useCart();
+
   const [result, setResult] = useState<{
     id: string;
     product: Product | null;
     error: string;
   } | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [adding, setAdding] = useState(false);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const loading = !!id && result?.id !== id;
   const product = result?.product ?? null;
@@ -37,6 +49,26 @@ export default function ProductDetails() {
       cancelled = true;
     };
   }, [id]);
+
+  async function handleAddToCart() {
+    if (!product) return;
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+
+    setAdding(true);
+    setMessage(null);
+    try {
+      await addItem(product.id, quantity);
+      setQuantity(1);
+      setMessage({ type: "success", text: "Added to cart" });
+    } catch (err) {
+      setMessage({ type: "error", text: getErrorMessage(err) });
+    } finally {
+      setAdding(false);
+    }
+  }
 
   const backLink = (
     <Link to="/" className="text-sm text-indigo-600 hover:underline">
@@ -77,6 +109,20 @@ export default function ProductDetails() {
 
   const stock = stockInfo(product.stock);
   const outOfStock = product.stock <= 0;
+  const isAdmin = user?.role === "ADMIN";
+
+  const inCart =
+    cart?.items.find((item) => item.productId === product.id)?.quantity ?? 0;
+  const available = product.stock - inCart;
+  const selected = Math.max(1, Math.min(quantity, available));
+
+  let buttonLabel = "Add to cart";
+  if (outOfStock) buttonLabel = "Out of stock";
+  else if (isAdmin) buttonLabel = "Admins cannot place orders";
+  else if (available <= 0) buttonLabel = "Maximum quantity in cart";
+  else if (adding) buttonLabel = "Adding...";
+
+  const buttonDisabled = outOfStock || isAdmin || available <= 0 || adding;
 
   return (
     <div>
@@ -118,7 +164,7 @@ export default function ProductDetails() {
             </p>
           )}
 
-          {!outOfStock && (
+          {!outOfStock && !isAdmin && available > 0 && (
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-700">
                 Quantity
@@ -127,18 +173,18 @@ export default function ProductDetails() {
                 <button
                   type="button"
                   aria-label="Decrease quantity"
-                  disabled={quantity <= 1}
-                  onClick={() => setQuantity((q) => q - 1)}
+                  disabled={selected <= 1}
+                  onClick={() => setQuantity(selected - 1)}
                   className="px-3 py-1.5 text-lg disabled:opacity-40"
                 >
                   &minus;
                 </button>
-                <span className="min-w-10 text-center text-sm">{quantity}</span>
+                <span className="min-w-10 text-center text-sm">{selected}</span>
                 <button
                   type="button"
                   aria-label="Increase quantity"
-                  disabled={quantity >= product.stock}
-                  onClick={() => setQuantity((q) => q + 1)}
+                  disabled={selected >= available}
+                  onClick={() => setQuantity(selected + 1)}
                   className="px-3 py-1.5 text-lg disabled:opacity-40"
                 >
                   +
@@ -147,13 +193,34 @@ export default function ProductDetails() {
             </div>
           )}
 
+          {inCart > 0 && (
+            <p className="text-sm text-gray-600">
+              {inCart} already in your{" "}
+              <Link to="/cart" className="text-indigo-600 hover:underline">
+                cart
+              </Link>
+            </p>
+          )}
+
           <button
             type="button"
-            disabled={outOfStock}
+            disabled={buttonDisabled}
+            onClick={handleAddToCart}
             className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300 md:w-auto md:px-10"
           >
-            {outOfStock ? "Out of stock" : "Add to cart"}
+            {buttonLabel}
           </button>
+
+          {message && (
+            <p
+              role={message.type === "error" ? "alert" : "status"}
+              className={`text-sm ${
+                message.type === "error" ? "text-red-600" : "text-green-600"
+              }`}
+            >
+              {message.text}
+            </p>
+          )}
         </div>
       </div>
     </div>

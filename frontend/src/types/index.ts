@@ -42,3 +42,21 @@ export interface ProductList {
   items: Product[];
   pagination: Pagination;
 }
+export interface CartItem {
+  id: number;
+  productId: number;
+  name: string;
+  imageUrl: string | null;
+  price: string;
+  quantity: number;
+  stock: number;
+  exceedsStock: boolean;
+  lineTotal: string;
+}
+
+export interface Cart {
+  items: CartItem[];
+  totalItems: number;
+  subtotal: string;
+  total: string;
+}
