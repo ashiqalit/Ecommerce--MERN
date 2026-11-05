@@ -6,12 +6,14 @@ import Home from "./pages/customer/Home";
 import Dashboard from "./pages/admin/Dashboard";
 import NotFound from "./pages/NotFound";
 import { CustomerLayout } from "./components/CustomerLayout";
+import ProductDetails from "./pages/customer/ProductDetails";
 
 export default function App() {
   return (
     <Routes>
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
       </Route>
 
       <Route element={<GuestRoute />}>
