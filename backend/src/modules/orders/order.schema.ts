@@ -11,3 +11,23 @@ export const listOrdersQuerySchema = z.object({
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 export type ListOrdersQuery = z.infer<typeof listOrdersQuerySchema>;
+
+export const orderStatuses = [
+  "PENDING",
+  "CONFIRMED",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+] as const;
+
+export type OrderStatusValue = (typeof orderStatuses)[number];
+
+export const adminListOrdersQuerySchema = listOrdersQuerySchema.extend({
+  status: z.enum(orderStatuses).optional(),
+});
+
+export const updateStatusSchema = z.object({
+  status: z.enum(orderStatuses),
+});
+
+export type AdminListOrdersQuery = z.infer<typeof adminListOrdersQuerySchema>;

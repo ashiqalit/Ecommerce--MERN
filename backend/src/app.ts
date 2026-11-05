@@ -8,6 +8,8 @@ import { uploadsDir } from "./config/paths";
 import cartRoutes from "./modules/cart/cart.routes";
 import addressRoutes from "./modules/addresses/address.routes";
 import orderRoutes from "./modules/orders/order.routes";
+import adminOrderRoutes from "./modules/orders/order.admin.routes";
+import userRoutes from "./modules/users/user.routes";
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.get("/api/health", (_req, res) => {
 });
 
 // feature routes will be mounted here
+app.use("/api/admin/orders", adminOrderRoutes);
+app.use("/api/admin/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/cart", cartRoutes);
