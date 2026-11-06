@@ -11,6 +11,10 @@ import Cart from "./pages/customer/Cart";
 import Checkout from "./pages/customer/Checkout";
 import Orders from "./pages/customer/Orders";
 import OrderDetails from "./pages/customer/OrderDetails";
+import { AdminLayout } from "./components/AdminLayout";
+import AdminCategories from "./pages/admin/Categories";
+import AdminProducts from "./pages/admin/Products";
+import ProductForm from "./pages/admin/ProductForm";
 
 export default function App() {
   return (
@@ -26,7 +30,13 @@ export default function App() {
       </Route>
 
       <Route element={<ProtectedRoute role="ADMIN" />}>
-        <Route path="/admin" element={<Dashboard />} />
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/products/new" element={<ProductForm />} />
+          <Route path="/admin/products/:id/edit" element={<ProductForm />} />
+          <Route path="/admin/categories" element={<AdminCategories />} />
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute role="CUSTOMER" />}>
