@@ -15,6 +15,10 @@ import { AdminLayout } from "./components/AdminLayout";
 import AdminCategories from "./pages/admin/Categories";
 import AdminProducts from "./pages/admin/Products";
 import ProductForm from "./pages/admin/ProductForm";
+import AdminUsers from "./pages/admin/Users";
+import AdminUserDetails from "./pages/admin/UserDetails";
+import AdminOrders from "./pages/admin/Orders";
+import AdminOrderDetails from "./pages/admin/OrderDetails";
 
 export default function App() {
   return (
@@ -36,6 +40,10 @@ export default function App() {
           <Route path="/admin/products/new" element={<ProductForm />} />
           <Route path="/admin/products/:id/edit" element={<ProductForm />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/users/:id" element={<AdminUserDetails />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/orders/:id" element={<AdminOrderDetails />} />
         </Route>
       </Route>
 

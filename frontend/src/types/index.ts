@@ -103,3 +103,42 @@ export interface OrderList {
   items: Order[];
   pagination: Pagination;
 }
+export interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  createdAt: string;
+  orderCount: number;
+}
+
+export interface UserList {
+  items: AdminUser[];
+  pagination: Pagination;
+}
+
+export interface UserOrderSummary {
+  id: number;
+  status: OrderStatus;
+  totalAmount: string;
+  createdAt: string;
+  itemCount: number;
+}
+
+export interface UserDetail {
+  id: number;
+  name: string;
+  email: string;
+  role: Role;
+  createdAt: string;
+  orders: UserOrderSummary[];
+}
+
+export interface AdminOrder extends Order {
+  user: { id: number; name: string; email: string };
+}
+
+export interface AdminOrderList {
+  items: AdminOrder[];
+  pagination: Pagination;
+}
